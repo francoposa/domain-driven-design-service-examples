@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "domain-driven-design-service-examples-python-fastapi-order-service-api"
+name = "domain-driven-design-service-examples-python-fastapi-order-service"
 version = "0.1.0a0"
 description = ""
 authors = ["francoposa <franco@francoposa.io>"]
