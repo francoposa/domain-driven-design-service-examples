@@ -1,3 +1,6 @@
+# compilation/artifact files
+**/__pycache__/
+
 # editors
 **/.idea/*
 **/.vscode/*
