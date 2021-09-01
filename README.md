@@ -1,1 +1,1 @@
-# Domain-Driven Design Entity Service Examples
+# Domain-Driven Design Service Examples
