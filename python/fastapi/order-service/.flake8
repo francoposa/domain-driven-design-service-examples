@@ -1,0 +1,3 @@
+[flake8]
+# Line length - Handled by black, generally violated by comment lines or lines that black chooses to keep long
+ignore = E501
