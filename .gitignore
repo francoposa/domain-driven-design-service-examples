@@ -1,5 +1,7 @@
 # compilation/artifact files
 **/__pycache__/
+**/*.egg-info/*
+.coverage
 
 # editors
 **/.idea/*
