@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from decimal import Decimal
 from typing import Tuple
 
@@ -15,24 +14,18 @@ class Order(pydantic.BaseModel):
 
     order_id: UUID4
     customer_id: UUID4
-    items: Tuple[OrderItem, ...]  # tuple for immutability
+    items: Tuple[ProductOrderItem, ...]  # tuple for immutability
 
     @property
     def total(self) -> Decimal:
         return sum([item.total for item in self.items])
 
 
-class OrderItem(pydantic.BaseModel, ABC):
+class ProductOrderItem:
     class Config:
         frozen = True
 
-    @property
-    @abstractmethod
-    def total(self) -> Decimal:
-        pass
-
-
-class ProductOrderItem(OrderItem):
+    order_id: UUID4
     product_id: UUID4
     quantity: Decimal
     unit_price: Decimal
