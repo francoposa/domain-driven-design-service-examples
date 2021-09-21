@@ -8,6 +8,6 @@ pub struct HealthStatus {
 
 pub async fn health(_: HttpRequest) -> web::Json<HealthStatus> {
     web::Json(HealthStatus {
-        status: String::from("OK"),
+        status: String::from("ok"),
     })
 }
