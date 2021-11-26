@@ -1,10 +1,7 @@
 # compilation/artifact files
-# python
 **/__pycache__/
 **/*.egg-info/*
 .coverage
-# rust
-**/target/
 
 # editors
 **/.idea/*
