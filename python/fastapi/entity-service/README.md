@@ -1,1 +1,0 @@
-# Python FastAPI Entity Example Service
