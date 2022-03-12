@@ -63,15 +63,15 @@ list_entities_route = APIRoute(
     endpoint=entity_handler.list,
     methods=["GET"],
     response_model=EntityList,
-    name="List Brands",
+    name="List Entities",
 )
-brand_router = APIRouter(
+entity_router = APIRouter(
     routes=[
         get_entity_route,
         list_entities_route,
     ]
 )
-app.include_router(brand_router)
+app.include_router(entity_router)
 
 
 # Apply these startup and shutdown signal handlers

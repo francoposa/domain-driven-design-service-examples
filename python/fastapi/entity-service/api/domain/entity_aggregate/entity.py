@@ -111,7 +111,7 @@ class EntityList(pydantic.BaseModel):
     class Config:
         allow_mutation = False
 
-    brands: List[Entity]
+    entities: List[Entity]
     page: int
     size: int
 
