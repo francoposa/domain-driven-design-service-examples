@@ -6,11 +6,13 @@ from typing import List, Optional, Set
 
 import pydantic
 
+from api.domain.utils.pydantic_utils import CreatedAtUpdatedAtBaseModel
 
-class Entity(pydantic.BaseModel):
+
+class Entity(CreatedAtUpdatedAtBaseModel):
     """Entity is the top-level domain entity for the aggregate root
 
-    A domain entity has a business domain meaning outside of a given service's
+    A domain entity has a business domain meaning beyond a given service's
     bounded context. It has identity which does not change over time, context,
     or when its attributes change.
 
@@ -36,6 +38,7 @@ class Entity(pydantic.BaseModel):
     # to enforce valid state regarding the content of `bar_values`.
     # See `validate_bar_values_count` for further info and alternate ways to enforce invariants.
     bar_values: Set[BarValueObject]
+    is_active: bool
 
     @classmethod
     @property
@@ -60,7 +63,9 @@ class Entity(pydantic.BaseModel):
         and keep validation logic in the setters.
         """
         if len(bar_values) > cls.MAX_BAR_VALUE_COUNT:
-            raise ValueError(f"Entity cannot have more than {cls.MAX_BAR_VALUE_COUNT} bar values")
+            raise ValueError(
+                f"Entity cannot have more than {cls.MAX_BAR_VALUE_COUNT} bar values"
+            )
 
         return bar_values
 
@@ -76,6 +81,11 @@ class FooValueObject(pydantic.BaseModel):
     Changing any of these attributes makes it a completely different Address.
     Multiple Users or Orders can share an Address without issue.
 
+    In our data model:
+    * each Entity has a single FooValueObject
+    * multiple Entities can have the same FooValueObject
+    This is a one-to-many relationship; many Entities can refer to one FooValueObject.
+
     https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/implement-value-objects
     """
 
@@ -88,23 +98,20 @@ class FooValueObject(pydantic.BaseModel):
     attribute_2: Decimal
 
 
-class BarValueObject(str, Enum):
+class BarValueObject(str):
     """BarValueObject is another example of value object.
 
-    Value objects do not need to be comprised of attributes, they can just be a single value.
-    In this example, we use a string enum class to restrict those possible arbitrary values.
+    Value objects do not need to be comprised of multiple attributes.
+    An example of a single-attribute value object would be taxonomy or labeling,
+    where an entity can be assigned pre-defined labels or categories.
 
-    An example of a enumerated single-value value object would be taxonomy or labeling,
-    where the user must choose from pre-defined labels or categories.
+    In our data model:
+    * each Entity can have multiple BarValueObjects
+    * multiple Entities can have the same BarValueObjects
+    This is a many-to-many relationship.
 
     https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/implement-value-objects
     """
-
-    ALPHA = "alpha"
-    BETA = "beta"
-    GAMMA = "gamma"
-    DELTA = "delta"
-    EPSILON = "epsilon"
 
 
 class EntityList(pydantic.BaseModel):
