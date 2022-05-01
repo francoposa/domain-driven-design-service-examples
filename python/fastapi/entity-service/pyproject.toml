@@ -10,6 +10,7 @@ alembic = "1.*"
 fastapi = {version = "0.75.*", extras = ["all"]}
 psycopg2 = "2.*"
 sqlalchemy = "1.*"
+PyYAML = "*"
 
 [tool.poetry.dev-dependencies]
 # Linters and Formatters should always float to the next version without restriction

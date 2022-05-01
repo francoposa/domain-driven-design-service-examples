@@ -1,7 +1,5 @@
 import sys
 
-# databases is not actually used here, it's just an example client from FastAPI docs
-# import databases
 import uvicorn  # type: ignore
 from fastapi import FastAPI
 from fastapi.routing import APIRoute, APIRouter
@@ -13,6 +11,7 @@ from api.domain.entity_aggregate.entity import Entity, EntityList
 from api.domain.entity_aggregate.entity_repo import IEntityRepo
 from api.domain.entity_aggregate.entity_service import EntityService
 from api.infrastructure.entity_aggregate.entity_repo import StubEntityRepo
+
 
 # inject database connection info from config here
 # and use it to connect to some database client like:
