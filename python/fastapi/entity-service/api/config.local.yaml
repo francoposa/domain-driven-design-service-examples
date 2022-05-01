@@ -1,0 +1,13 @@
+---
+server:
+  host: localhost
+  port: 2100
+
+postgres:
+  host: localhost
+  port: 5432
+  username: postgres
+  database: entity_service
+  application: entity_service
+  connectTimeout: 5
+  sslMode: disable
