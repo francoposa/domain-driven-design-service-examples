@@ -7,10 +7,11 @@ authors = []
 [tool.poetry.dependencies]
 python = "^3.8"
 alembic = "1.*"
-fastapi = {version = "0.75.*", extras = ["all"]}
+fastapi = {version = "0.81.*", extras = ["all"]}
 psycopg2 = "2.*"
 sqlalchemy = "1.*"
 PyYAML = "*"
+databases = {version = "0.6.*", extras = ["postgresql"]}
 
 [tool.poetry.dev-dependencies]
 # Linters and Formatters should always float to the next version without restriction
@@ -23,6 +24,7 @@ pylint = "*"
 # Testing tools should probably float to the next version;
 # if it breaks, get compatible with the new version
 pytest = "*"
+pytest-asyncio = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

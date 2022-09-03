@@ -1,5 +1,6 @@
 import uuid
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from api.domain.entity_aggregate.entity import Entity, EntityList
 
@@ -26,7 +27,9 @@ class IEntityRepo(ABC):
         pass
 
     @abstractmethod
-    async def list(self, page: int = 0, size: int = 0) -> EntityList:
+    async def where(
+        self, page: Optional[int] = None, size: Optional[int] = None
+    ) -> EntityList:
         pass
 
     @abstractmethod
@@ -34,11 +37,11 @@ class IEntityRepo(ABC):
         pass
 
     @abstractmethod
-    async def update(self, entity: Entity) -> Entity:
+    async def create_or_update(self, entity: Entity) -> Entity:
         pass
 
     @abstractmethod
-    async def create_or_update(self, entity: Entity) -> Entity:
+    async def update(self, entity: Entity) -> Entity:
         pass
 
     @abstractmethod
