@@ -17,4 +17,7 @@ class EntityHandler:
             raise HTTPException(status_code=404, detail=str(e)) from e
 
     async def list(self, page: int = 0, size: int = 20) -> EntityList:
-        return await self._service.list(page=page, size=size)
+        return await self._service.where(page=page, size=size)
+
+    async def create(self, entity: Entity) -> Entity:
+        return await self._service.create(entity)

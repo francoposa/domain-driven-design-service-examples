@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pydantic
 
 from api.domain.entity_aggregate.entity import Entity, EntityList
@@ -25,16 +27,18 @@ class EntityService:
     async def get(self, entity_id: pydantic.UUID4) -> Entity:
         pass
 
-    async def list(self, page: int = 0, size: int = 0) -> EntityList:
+    async def where(
+        self, page: Optional[int] = None, size: Optional[int] = None
+    ) -> EntityList:
         pass
 
     async def create(self, entity: Entity) -> Entity:
+        return await self._repo.create(entity)
+
+    async def create_or_update(self, entity: Entity) -> Entity:
         pass
 
     async def update(self, entity: Entity) -> Entity:
-        pass
-
-    async def create_or_update(self, entity: Entity) -> Entity:
         pass
 
     async def delete(self, entity_id) -> Entity:

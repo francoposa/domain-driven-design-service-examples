@@ -1,6 +1,10 @@
 import argparse
+import asyncio
+import os
 import sys
+from decimal import Decimal
 
+import databases
 import uvicorn  # type: ignore
 import yaml
 from fastapi import FastAPI
@@ -8,16 +12,19 @@ from fastapi.routing import APIRoute, APIRouter
 from starlette.middleware.cors import CORSMiddleware
 
 from api.application.entity_aggregate.entity_handler import EntityHandler
+from api.application.entity_aggregate.entity_router import entity_router
 from api.application.health import health_handler
-from api.domain.entity_aggregate.entity import Entity, EntityList
+from api.domain.entity_aggregate.entity import (
+    BarValueObject,
+    ChildEntity,
+    Entity,
+    EntityList,
+)
 from api.domain.entity_aggregate.entity_repo import IEntityRepo
 from api.domain.entity_aggregate.entity_service import EntityService
-from api.infrastructure.entity_aggregate.entity_repo import StubEntityRepo
+from api.infrastructure.entity_aggregate.entity_repo import PGEntityRepo
 
 app = FastAPI()
-API_PREFIX_V0 = "/api/v0"
-API_V0_ENTITIES_PATH = API_PREFIX_V0 + "/entities"
-API_V0_ENTITIES_ID_PATH = API_PREFIX_V0 + "/entities/{entity_id}"
 
 
 parser = argparse.ArgumentParser()
@@ -33,7 +40,15 @@ with open(args.config, "r") as conf_file:
 # pg_client = databases.Database(DATABASE_URL)
 # then inject it into your repo implementation like
 # entity_repo: EntityRepo = PGEntityRepo(pg_client=pgclient)
-entity_repo: IEntityRepo = StubEntityRepo()
+pg_host = os.getenv("POSTGRES_HOST", default="localhost")
+pg_port = os.getenv("POSTGRES_PORT", default=5432)
+pg_user = os.getenv("POSTGRES_USER", default="postgres")
+pg_password = os.getenv("POSTGRES_PASSWORD", default="")
+pg_database = os.getenv("POSTGRES_DB", "entity_service")
+pg_url = f"postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_database}"
+pg_client = databases.Database(pg_url)
+
+entity_repo: IEntityRepo = PGEntityRepo(pg_client)
 entity_service = EntityService(repo=entity_repo)
 entity_handler = EntityHandler(service=entity_service)
 
@@ -54,44 +69,18 @@ get_service_health_route = APIRoute(
 health_router = APIRouter(routes=[get_service_health_route])
 app.include_router(health_router)
 
-# FastAPI does not yet support introspection on class-based handlers.
-# Using APIRoute/APIRouter instead of decorators allows our handlers to be
-# members of a class, which allows us to inject the Service as a dependency.
-# The cost is some extra boilerplate config like declaring the response model,
-# instead of the magic/introspection provided by the decorators.
-get_entity_route = APIRoute(
-    path=API_V0_ENTITIES_ID_PATH,
-    endpoint=entity_handler.get,
-    methods=["GET"],
-    response_model=Entity,
-    name="Get Entity",
-)
-list_entities_route = APIRoute(
-    path=API_V0_ENTITIES_PATH,
-    endpoint=entity_handler.list,
-    methods=["GET"],
-    response_model=EntityList,
-    name="List Entities",
-)
-entity_router = APIRouter(
-    routes=[
-        get_entity_route,
-        list_entities_route,
-    ]
-)
-app.include_router(entity_router)
 
-# Apply these startup and shutdown signal handlers
-# to whichever database client/engine you use
+app.include_router(entity_router(entity_handler))
 
-# @app.on_event("startup")
-# async def startup():
-#     await database.connect()
-#
-#
-# @app.on_event("shutdown")
-# async def shutdown():
-#     await database.disconnect()
+
+@app.on_event("startup")
+async def startup():
+    await pg_client.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await pg_client.disconnect()
 
 
 def main():  # pylint: disable=missing-function-docstring
