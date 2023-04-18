@@ -30,7 +30,7 @@ pg_host = getenv("POSTGRES_HOST", default="localhost")
 pg_port = getenv("POSTGRES_PORT", default=5432)
 pg_user = getenv("POSTGRES_USER", default="postgres")
 pg_password = getenv("POSTGRES_PASSWORD", default="")
-pg_database = getenv("POSTGRES_DB", "entity_service")
+pg_database = getenv("POSTGRES_DB", "four_o_three_authorization")
 
 pg_url = f"postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_database}"
 config.set_main_option("sqlalchemy.url", pg_url)

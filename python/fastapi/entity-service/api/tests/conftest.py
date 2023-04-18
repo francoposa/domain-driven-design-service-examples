@@ -4,7 +4,7 @@ import databases
 import pytest
 import pytest_asyncio
 
-from api.infrastructure.datastore.postgres.tables import ENTITY_TABLE
+from api.infrastructure.datastore.postgres.tables import ENTITY_TABLE, CHILD_ENTITY_TABLE
 from api.infrastructure.entity_aggregate.entity_repo import PGEntityRepo
 from api.tests.stubs.entity_aggregate.entity import stub_entities
 
@@ -25,7 +25,7 @@ async def pg_client() -> databases.Database:
 
 @pytest_asyncio.fixture
 async def pg_db(pg_client) -> databases.Database:
-    tables = [ENTITY_TABLE]
+    tables = [ENTITY_TABLE, CHILD_ENTITY_TABLE]
 
     for table in tables:
         async with pg_client.connection() as conn:
